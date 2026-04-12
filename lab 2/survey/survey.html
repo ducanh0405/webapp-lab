@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Form</title>
+    <link rel="stylesheet" href="survey.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-placeholder">IU Logo</div>
+            <h1>Survey Form</h1>
+        </header>
+
+        <form action="#" method="POST">
+            <!-- User Information -->
+            <section class="form-group">
+                <h2>Your Information</h2>
+                <div class="input-row">
+                    <label for="fname">First Name:</label>
+                    <input type="text" id="fname" name="firstname" required>
+                </div>
+                <div class="input-row">
+                    <label for="lname">Last Name:</label>
+                    <input type="text" id="lname" name="lastname" required>
+                </div>
+                <div class="input-row">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-row">
+                    <label for="dob">Date of Birth:</label>
+                    <input type="date" id="dob" name="dob">
+                </div>
+            </section>
+
+            <!-- Referral -->
+            <section class="form-group">
+                <h2>How did you hear about us?</h2>
+                <div class="radio-group">
+                    <label><input type="radio" name="referral" value="search" checked> Search engine</label>
+                    <label><input type="radio" name="referral" value="word_of_mouth"> Word of mouth</label>
+                    <label><input type="radio" name="referral" value="social_media"> Social Media</label>
+                    <label><input type="radio" name="referral" value="other"> Other</label>
+                </div>
+            </section>
+
+            <!-- Preference -->
+            <section class="form-group">
+                <h2>Preferences</h2>
+                <p>Would you like to receive announcements?</p>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="announcements" value="yes"> Yes, please send me announcements!</label>
+                </div>
+            </section>
+
+            <!-- Contact Method -->
+            <section class="form-group">
+                <h2>Contact Preference</h2>
+                <div class="input-row">
+                    <label for="contact_method">Preferred method of contact:</label>
+                    <select id="contact_method" name="contact_method">
+                        <option value="email">Email</option>
+                        <option value="postal">Postal mail</option>
+                        <option value="phone">Phone</option>
+                    </select>
+                </div>
+            </section>
+
+            <div class="button-group">
+                <input type="submit" value="Submit">
+                <input type="reset" value="Reset">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

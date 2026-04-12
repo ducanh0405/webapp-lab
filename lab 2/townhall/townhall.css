@@ -1,0 +1,173 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fcebb6; /* Classic yellow/tan background for this assignment */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header, nav, main, footer {
+    width: 800px;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+header {
+    background-color: #e28e00; /* Deep orange */
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 25px;
+    border-top: 6px solid #222;
+}
+
+header .logo {
+    border-radius: 5px;
+    margin-right: 25px;
+    border: 3px solid #fff;
+    background-color: #fff;
+}
+
+header .header-text h1 {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: 2.4rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+header .header-text h2 {
+    margin: 5px 0 0 0;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: #fff;
+    font-weight: normal;
+}
+
+nav {
+    background-color: #222;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    flex: 1;
+}
+
+nav ul li a {
+    display: block;
+    color: #fff;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover, nav ul li a.current {
+    background-color: #e28e00;
+    color: #fff;
+}
+
+main {
+    display: flex;
+    padding: 30px;
+}
+
+article {
+    flex: 2; /* takes 66% minus padding */
+    padding-right: 30px;
+    border-right: 2px solid #eee;
+}
+
+aside {
+    flex: 1; /* takes 33% minus padding */
+    padding-left: 30px;
+}
+
+h2 {
+    color: #e28e00;
+    border-bottom: 3px solid #e28e00;
+    padding-bottom: 5px;
+    font-size: 1.8rem;
+    margin-top: 0;
+}
+
+h3 {
+    color: #444;
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.speaker {
+    display: flex;
+    margin-bottom: 25px;
+    background-color: #fdfdfd;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #f1f1f1;
+}
+
+.speaker img {
+    width: 120px;
+    height: 120px;
+    border-radius: 5px;
+    margin-right: 20px;
+    object-fit: cover;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.speaker-info h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.25rem;
+    color: #222;
+}
+
+.speaker-info p {
+    margin: 0;
+    line-height: 1.6;
+    color: #555;
+}
+
+aside h3 {
+    font-size: 1.2rem;
+    margin: 20px 0 8px 0;
+    color: #222;
+}
+
+aside h3:first-of-type {
+    margin-top: 0;
+}
+
+aside p {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+aside a {
+    color: #e28e00;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+aside a:hover {
+    text-decoration: underline;
+    color: #cc7a00;
+}
+
+footer {
+    background-color: #222;
+    color: #ccc;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.95rem;
+    border-bottom: 6px solid #e28e00;
+    margin-bottom: 40px;
+}
