@@ -5,7 +5,7 @@
          https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
-    <display-name>Lab 5 - Student MVC</display-name>
+    <display-name>Lab 6 - Authentication</display-name>
 
     <!-- Default welcome page -->
     <welcome-file-list>

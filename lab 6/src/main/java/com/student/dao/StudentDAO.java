@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * StudentDAO - Data Access Object
- * Dùng File JSON để lưu trữ thay vì Database
+ * Use JSON file for storage instead of Database
  */
 public class StudentDAO {
 
@@ -20,13 +20,13 @@ public class StudentDAO {
 
     public StudentDAO(String filePath) {
         this.filePath = filePath;
-        // Khởi tạo file nếu chưa tồn tại
+        // Initialize file if not exists
         File file = new File(filePath);
         if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
-                // Khởi tạo data mẫu nếu file rỗng
+                // Initialize sample data if file is empty
                 List<Student> initialData = new ArrayList<>();
                 initialData.add(new Student(1, "Nguyen Van A", "vana@example.com", 20));
                 initialData.add(new Student(2, "Tran Thi B", "thib@example.com", 21));
@@ -38,7 +38,7 @@ public class StudentDAO {
         }
     }
 
-    // Đọc danh sách từ file JSON
+    // Read list from JSON file
     private List<Student> loadStudents() {
         try (Reader reader = new FileReader(filePath)) {
             Type listType = new TypeToken<ArrayList<Student>>(){}.getType();
@@ -53,7 +53,7 @@ public class StudentDAO {
         }
     }
 
-    // Ghi danh sách ra file JSON
+    // Write list to JSON file
     private void saveStudents(List<Student> students) {
         try (Writer writer = new FileWriter(filePath)) {
             gson.toJson(students, writer);

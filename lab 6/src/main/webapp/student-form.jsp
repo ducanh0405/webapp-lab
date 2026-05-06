@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>${empty student.id || student.id == 0 ? 'Thêm Sinh Viên' : 'Sửa Sinh Viên'}</title>
+    <title>${empty student.id || student.id == 0 ? 'Add Student' : 'Edit Student'}</title>
     <style>
         body  { font-family: Arial, sans-serif; margin: 30px; background: #f4f4f4; }
         h2    { color: #333; }
@@ -23,11 +23,11 @@
     </style>
 </head>
 <body>
-    <h2>${empty student.id || student.id == 0 ? '➕ Thêm Sinh Viên Mới' : '✏️ Sửa Thông Tin Sinh Viên'}</h2>
+    <h2>${empty student.id || student.id == 0 ? '➕ Add New Student' : '✏️ Edit Student Info'}</h2>
 
     <div class="form-container">
         <form action="students" method="post">
-            <!-- Ẩn action: insert hoặc update -->
+            <!-- Hidden action: insert or update -->
             <c:choose>
                 <c:when test="${empty student.id || student.id == 0}">
                     <input type="hidden" name="action" value="insert">
@@ -38,19 +38,19 @@
                 </c:otherwise>
             </c:choose>
 
-            <label>Họ và Tên</label>
-            <input type="text" name="name" value="${student.name}" required placeholder="Nhập họ tên...">
+            <label>Full Name</label>
+            <input type="text" name="name" value="${student.name}" required placeholder="Enter full name...">
 
             <label>Email</label>
-            <input type="email" name="email" value="${student.email}" required placeholder="Nhập email...">
+            <input type="email" name="email" value="${student.email}" required placeholder="Enter email...">
 
-            <label>Tuổi</label>
-            <input type="number" name="age" value="${student.age}" required min="1" max="100" placeholder="Nhập tuổi...">
+            <label>Age</label>
+            <input type="number" name="age" value="${student.age}" required min="1" max="100" placeholder="Enter age...">
 
             <br>
-            <button type="submit" class="btn-submit">💾 Lưu</button>
+            <button type="submit" class="btn-submit">💾 Save</button>
         </form>
-        <a href="students" class="btn-back">← Quay lại danh sách</a>
+        <a href="students" class="btn-back">← Back to list</a>
     </div>
 </body>
 </html>

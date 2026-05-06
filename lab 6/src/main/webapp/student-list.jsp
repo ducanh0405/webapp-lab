@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Danh Sách Sinh Viên</title>
+    <title>Student List</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 30px; background: #f4f4f4; }
         h2   { color: #333; }
@@ -19,17 +19,17 @@
     </style>
 </head>
 <body>
-    <h2>📋 Danh Sách Sinh Viên</h2>
-    <a href="students?action=new" class="btn btn-add">+ Thêm Sinh Viên</a>
+    <h2>📋 Student List</h2>
+    <a href="students?action=new" class="btn btn-add">+ Add Student</a>
 
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Họ Tên</th>
+                <th>Full Name</th>
                 <th>Email</th>
-                <th>Tuổi</th>
-                <th>Hành Động</th>
+                <th>Age</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -40,11 +40,11 @@
                     <td>${student.email}</td>
                     <td>${student.age}</td>
                     <td>
-                        <a href="students?action=edit&id=${student.id}" class="btn btn-edit">✏️ Sửa</a>
+                        <a href="students?action=edit&id=${student.id}" class="btn btn-edit">✏️ Edit</a>
                         &nbsp;
                         <a href="students?action=delete&id=${student.id}"
                            class="btn btn-delete"
-                           onclick="return confirm('Xóa sinh viên này?')">🗑️ Xóa</a>
+                           onclick="return confirm('Delete this student?')">🗑️ Delete</a>
                     </td>
                 </tr>
             </c:forEach>

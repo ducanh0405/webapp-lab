@@ -6,10 +6,10 @@ public class Student {
     private String email;
     private int age;
 
-    // Constructor mặc định
+    // Default constructor
     public Student() {}
 
-    // Constructor đầy đủ
+    // Full constructor
     public Student(int id, String name, String email, int age) {
         this.id = id;
         this.name = name;
@@ -17,7 +17,7 @@ public class Student {
         this.age = age;
     }
 
-    // Getters và Setters
+    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

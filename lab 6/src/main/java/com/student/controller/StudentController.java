@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * StudentController - Front Controller (Servlet)
- * Điều hướng tất cả request liên quan đến Student
+ * Routes all requests related to Student
  */
 @WebServlet("/students")
 public class StudentController extends HttpServlet {
@@ -22,7 +22,7 @@ public class StudentController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Lấy đường dẫn thực tế đến thư mục WEB-INF/data/students.json
+        // Get the real path to the WEB-INF/data/students.json file
         String dataFilePath = getServletContext().getRealPath("/WEB-INF/data/students.json");
         studentDAO = new StudentDAO(dataFilePath);
     }
@@ -67,7 +67,7 @@ public class StudentController extends HttpServlet {
         }
     }
 
-    // Hiển thị danh sách sinh viên
+    // Display the list of students
     private void listStudents(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Student> students = studentDAO.getAllStudents();
@@ -75,14 +75,14 @@ public class StudentController extends HttpServlet {
         request.getRequestDispatcher("/student-list.jsp").forward(request, response);
     }
 
-    // Hiển thị form thêm mới
+    // Display the add new form
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("student", new Student());
         request.getRequestDispatcher("/student-form.jsp").forward(request, response);
     }
 
-    // Hiển thị form chỉnh sửa
+    // Display the edit form
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -91,7 +91,7 @@ public class StudentController extends HttpServlet {
         request.getRequestDispatcher("/student-form.jsp").forward(request, response);
     }
 
-    // Thêm sinh viên mới
+    // Add new student
     private void insertStudent(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String name  = request.getParameter("name");
@@ -103,7 +103,7 @@ public class StudentController extends HttpServlet {
         response.sendRedirect("students");
     }
 
-    // Cập nhật sinh viên
+    // Update student
     private void updateStudent(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int id       = Integer.parseInt(request.getParameter("id"));
@@ -116,7 +116,7 @@ public class StudentController extends HttpServlet {
         response.sendRedirect("students");
     }
 
-    // Xóa sinh viên
+    // Delete student
     private void deleteStudent(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
