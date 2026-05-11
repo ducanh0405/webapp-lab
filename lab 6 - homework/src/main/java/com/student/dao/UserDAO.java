@@ -4,6 +4,7 @@ import com.student.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
+import java.util.UUID;
 
 public class UserDAO {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/student_management";
@@ -21,6 +22,17 @@ public class UserDAO {
             "SELECT * FROM users WHERE username = ?";
     private static final String SQL_INSERT =
             "INSERT INTO users (username, password, full_name, role) VALUES (?, ?, ?, ?)";
+    private static final String SQL_INSERT_REMEMBER =
+            "INSERT INTO remember_tokens (user_id, token, expires_at) VALUES (?, ?, ?)";
+    private static final String SQL_USER_BY_REMEMBER =
+            "SELECT u.* FROM users u INNER JOIN remember_tokens t ON t.user_id = u.id "
+                    + "WHERE t.token = ? AND t.expires_at > NOW() AND u.is_active = TRUE";
+    private static final String SQL_DELETE_REMEMBER_BY_TOKEN =
+            "DELETE FROM remember_tokens WHERE token = ?";
+    private static final String SQL_DELETE_REMEMBER_BY_USER =
+            "DELETE FROM remember_tokens WHERE user_id = ?";
+    private static final String SQL_UPDATE_PASSWORD =
+            "UPDATE users SET password = ? WHERE id = ?";
 
     // Get database connection
     private Connection getConnection() throws SQLException {
@@ -137,25 +149,6 @@ public class UserDAO {
     }
 
     /**
-     * Update user's password
-     */
-    public boolean updatePassword(int userId, String newHashedPassword) {
-        String sql = "UPDATE users SET password = ? WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setString(1, newHashedPassword);
-            pstmt.setInt(2, userId);
-            
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
      * Map ResultSet to User object
      */
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
@@ -169,5 +162,78 @@ public class UserDAO {
         user.setCreatedAt(rs.getTimestamp("created_at"));
         user.setLastLogin(rs.getTimestamp("last_login"));
         return user;
+    }
+
+    /**
+     * Persists a new hashed password for the user.
+     *
+     * @param newHashedPassword BCrypt hash
+     */
+    public boolean updatePassword(int userId, String newHashedPassword) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SQL_UPDATE_PASSWORD)) {
+            pstmt.setString(1, newHashedPassword);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void saveRememberToken(int userId, String token, Timestamp expiresAt) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SQL_INSERT_REMEMBER)) {
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, token);
+            pstmt.setTimestamp(3, expiresAt);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public User findUserByValidRememberToken(String token) {
+        User user = null;
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SQL_USER_BY_REMEMBER)) {
+            pstmt.setString(1, token);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    user = mapResultSetToUser(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public void deleteRememberToken(String token) {
+        if (token == null || token.isBlank()) {
+            return;
+        }
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SQL_DELETE_REMEMBER_BY_TOKEN)) {
+            pstmt.setString(1, token.trim());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteRememberTokensForUser(int userId) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SQL_DELETE_REMEMBER_BY_USER)) {
+            pstmt.setInt(1, userId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String newRememberToken() {
+        return UUID.randomUUID().toString().replace("-", "")
+                + UUID.randomUUID().toString().replace("-", "");
     }
 }

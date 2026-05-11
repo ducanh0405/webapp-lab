@@ -1,0 +1,20 @@
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<c:set var="tr" value="${empty themeRedirect ? '/dashboard' : themeRedirect}"/>
+<c:url var="themeLight" value="/theme"><c:param name="set" value="light"/><c:param name="redirect" value="${tr}"/></c:url>
+<c:url var="themeDark" value="/theme"><c:param name="set" value="dark"/><c:param name="redirect" value="${tr}"/></c:url>
+<nav class="app-navbar">
+    <div class="nav-brand">Student Management</div>
+    <div class="nav-links">
+        <span class="nav-user">Hi, <c:out value="${sessionScope.fullName}"/></span>
+        <span class="role-badge"><c:out value="${sessionScope.role}"/></span>
+        <a href="${pageContext.request.contextPath}/dashboard">Dashboard</a>
+        <a href="${pageContext.request.contextPath}/students">Students</a>
+        <a href="${pageContext.request.contextPath}/change-password">Change password</a>
+        <span class="theme-toggle">
+            <a href="${themeLight}">Light</a>
+            |
+            <a href="${themeDark}">Dark</a>
+        </span>
+        <a href="${pageContext.request.contextPath}/logout">Logout</a>
+    </div>
+</nav>

@@ -1,0 +1,14 @@
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<c:if test="${not empty pageContext.session}">
+<script>
+(function () {
+    var maxSec = ${pageContext.session.maxInactiveInterval};
+    var warnBeforeSec = 5 * 60;
+    if (maxSec <= warnBeforeSec) return;
+    var delayMs = Math.max(0, (maxSec - warnBeforeSec) * 1000);
+    setTimeout(function () {
+        alert('Your session will expire in about 5 minutes due to inactivity. Save your work.');
+    }, delayMs);
+})();
+</script>
+</c:if>
