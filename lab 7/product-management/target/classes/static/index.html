@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot Product Management Demo</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 0; margin: 0; display: flex; align-items: center; justify-content: center; }
+        .hero { background: white; padding: 50px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; max-width: 600px; }
+        h1 { color: #667eea; margin-bottom: 20px; font-size: 2.5rem; }
+        p { color: #555; font-size: 1.1rem; margin-bottom: 30px; line-height: 1.6; }
+        .btn { display: inline-block; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: all 0.3s ease; margin: 10px; }
+        .btn-primary { background: #667eea; color: white; border: 2px solid #667eea; }
+        .btn-primary:hover { background: transparent; color: #667eea; }
+        .btn-secondary { background: #28a745; color: white; border: 2px solid #28a745; }
+        .btn-secondary:hover { background: transparent; color: #28a745; }
+        .features { margin-top: 40px; text-align: left; }
+        .features h3 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .features ul { list-style-type: none; padding: 0; }
+        .features li { padding: 8px 0; color: #666; position: relative; padding-left: 25px; }
+        .features li::before { content: '✅'; position: absolute; left: 0; }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>📦 Product Management System</h1>
+        <p>Welcome to the Spring Boot & JPA CRUD Demo! This application demonstrates a full-stack Spring Boot architecture using Thymeleaf, Spring Data JPA, and MySQL.</p>
+        
+        <div>
+            <a href="/products" class="btn btn-primary">🚀 Launch App</a>
+            <a href="/api/products" class="btn btn-secondary">🔌 View REST API</a>
+        </div>
+
+        <div class="features">
+            <h3>Completed Features</h3>
+            <ul>
+                <li>Full CRUD Operations with JPA</li>
+                <li>Advanced Search & Filtering</li>
+                <li>Server-side Data Validation</li>
+                <li>Pagination & Sorting</li>
+                <li>Interactive Statistics Dashboard</li>
+                <li>RESTful API Endpoints</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
