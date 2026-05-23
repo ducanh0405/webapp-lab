@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer API - REST & DTO Interactive Simulator</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #0B0F19;
+            --bg-surface: #151B2C;
+            --bg-surface-elevated: #1F293D;
+            --border-color: #2D3A54;
+            --border-hover: #41557A;
+            --text-primary: #F3F4F6;
+            --text-secondary: #9CA3AF;
+            --text-muted: #6B7280;
+            --accent-primary: #6366F1;
+            --accent-primary-hover: #4F46E5;
+            --accent-success: #10B981;
+            --accent-danger: #EF4444;
+            --accent-warning: #F59E0B;
+            --accent-info: #06B6D4;
+            --accent-purple: #8B5CF6;
+            --glass-bg: rgba(21, 27, 44, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.4);
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-display: 'Outfit', sans-serif;
+            --font-code: 'Fira Code', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) var(--bg-base);
+        }
+
+        /* Scrollbar styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-hover);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header block */
+        header {
+            padding: 1.5rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header-logo {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-info));
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .header-title h1 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #FFF, #C7D2FE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .badge-primary {
+            background: rgba(99, 102, 241, 0.15);
+            color: #A5B4FC;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Layout */
+        .app-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+
+        /* Sidebar - Simulation Controls */
+        .sidebar {
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-group {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .control-group-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Rate limit indicator */
+        .rate-limit-card {
+            background: linear-gradient(135deg, rgba(31, 41, 61, 0.8), rgba(21, 27, 44, 0.8));
+            border: 1px solid var(--border-color);
+        }
+        
+        .rate-limit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .rate-limit-progress-bg {
+            height: 8px;
+            background: var(--bg-base);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .rate-limit-progress {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to right, var(--accent-success), var(--accent-info));
+            border-radius: 9999px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+        }
+
+        .rate-limit-progress.warning {
+            background: var(--accent-warning);
+        }
+
+        .rate-limit-progress.danger {
+            background: var(--accent-danger);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .rate-limit-action-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #F87171;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .rate-limit-action-btn:hover {
+            background: var(--accent-danger);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Version switch */
+        .version-switcher {
+            display: flex;
+            background: var(--bg-base);
+            border-radius: 8px;
+            padding: 0.25rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .version-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+        }
+
+        .version-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Database Simulator UI */
+        .db-stat {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .db-stat span:last-child {
+            font-family: var(--font-code);
+            color: var(--accent-info);
+            font-weight: 600;
+        }
+
+        .btn-reset-db {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #A5B4FC;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-reset-db:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Console Output */
+        .console-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 250px;
+        }
+
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .console-title {
+            font-family: var(--font-display);
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .console-badge {
+            font-family: var(--font-code);
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            background: rgba(6, 182, 212, 0.15);
+            color: #22D3EE;
+        }
+
+        .code-box {
+            flex: 1;
+            background: #090C15;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem;
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: #38BDF8;
+            overflow: auto;
+            position: relative;
+            max-height: 300px;
+        }
+
+        .code-box.error {
+            color: #F87171;
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .code-box-header {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 0.25rem;
+        }
+
+        /* Main Workspace */
+        .workspace {
+            display: grid;
+            grid-template-rows: 1fr 280px;
+            overflow: hidden;
+        }
+
+        .dashboard-panel {
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-title h2 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .dashboard-title p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-add:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Search & Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            background: var(--bg-surface);
+            padding: 0.875rem 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem 0.5rem 2.25rem;
+            border-radius: 8px;
+            color: white;
+            font-family: var(--font-main);
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .select-filter {
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-size: 0.875rem;
+            outline: none;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        .select-filter:focus {
+            border-color: var(--accent-primary);
+        }
+
+        /* Customer Table */
+        .table-container {
+            background: var(--bg-surface);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+
+        thead {
+            background: var(--bg-surface-elevated);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            color: white;
+        }
+
+        th i {
+            margin-left: 0.25rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+        }
+
+        .td-code {
+            font-family: var(--font-code);
+            font-weight: 600;
+            color: var(--accent-info);
+        }
+
+        .td-name {
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34D399;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: #F87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            background: var(--bg-surface-elevated);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .btn-action:hover {
+            color: white;
+            border-color: var(--text-secondary);
+        }
+
+        .btn-action.edit:hover {
+            background: rgba(99, 102, 241, 0.15);
+            color: #A5B4FC;
+            border-color: var(--accent-primary);
+        }
+
+        .btn-action.patch:hover {
+            background: rgba(6, 182, 212, 0.15);
+            color: #22D3EE;
+            border-color: var(--accent-info);
+        }
+
+        .btn-action.delete:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #F87171;
+            border-color: var(--accent-danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Pagination */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: var(--bg-surface-elevated);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .pagination-info {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.35rem;
+            align-items: center;
+        }
+
+        .btn-page {
+            height: 30px;
+            padding: 0 0.75rem;
+            border-radius: 6px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-page:hover:not(:disabled) {
+            background: var(--bg-surface-elevated);
+            color: white;
+            border-color: var(--border-hover);
+        }
+
+        .btn-page:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-page.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Bottom Console Log Section */
+        .live-api-logger {
+            background: #090C15;
+            border-top: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+        }
+
+        .logger-panel {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .logger-panel:last-child {
+            border-right: none;
+        }
+
+        .logger-panel-header {
+            background: #111625;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logger-panel-title {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .status-code {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .status-2xx {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+        }
+
+        .status-4xx {
+            background: rgba(239, 68, 68, 0.15);
+            color: #F87171;
+        }
+
+        .logger-panel-body {
+            flex: 1;
+            padding: 0.75rem;
+            overflow: auto;
+            margin: 0;
+        }
+
+        .json-viewer {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: #A5B4FC;
+            white-space: pre-wrap;
+        }
+
+        .http-method {
+            font-family: var(--font-code);
+            font-weight: 700;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+        }
+
+        .method-GET { background: rgba(6, 182, 212, 0.15); color: #22D3EE; }
+        .method-POST { background: rgba(16, 185, 129, 0.15); color: #34D399; }
+        .method-PUT { background: rgba(245, 158, 11, 0.15); color: #FBBF24; }
+        .method-PATCH { background: rgba(139, 92, 246, 0.15); color: #C084FC; }
+        .method-DELETE { background: rgba(239, 68, 68, 0.15); color: #F87171; }
+
+        .http-url {
+            color: #38BDF8;
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+        }
+
+        /* Modals & Overlays */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 480px;
+            max-width: 90%;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-surface-elevated);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.15rem;
+            transition: color 0.15s;
+        }
+
+        .btn-modal-close:hover {
+            color: white;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.6rem 0.875rem;
+            color: white;
+            font-family: var(--font-main);
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-input.invalid {
+            border-color: var(--accent-danger);
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+
+        .error-message {
+            font-size: 0.7rem;
+            color: #F87171;
+            font-weight: 500;
+            display: none;
+        }
+
+        .modal-footer {
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-surface-elevated);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-hover);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-primary-hover);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            color: white;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon-success { color: var(--accent-success); }
+        .toast-icon-danger { color: var(--accent-danger); }
+        .toast-icon-warning { color: var(--accent-warning); }
+
+        /* API Rate Limit Block Modal Overlay */
+        .rate-limit-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(11, 15, 25, 0.9);
+            backdrop-filter: blur(16px);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .rate-limit-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .rate-limit-card-error {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 2.5rem;
+            border-radius: 24px;
+            max-width: 500px;
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .rate-limit-overlay.active .rate-limit-card-error {
+            transform: scale(1);
+        }
+
+        .rate-limit-error-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-danger);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            animation: pulse-danger 2s infinite;
+        }
+
+        @keyframes pulse-danger {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .rate-limit-card-error h2 {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .rate-limit-card-error p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .rate-limit-countdown {
+            font-family: var(--font-code);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-warning);
+        }
+
+        .rate-limit-card-error button {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rate-limit-card-error button:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-primary);
+        }
+
+        /* Mini indicators */
+        .method-indicator {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            margin-right: 0.35rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-title-container">
+            <div class="header-logo">
+                <i class="fa-solid fa-server"></i>
+            </div>
+            <div class="header-title">
+                <h1>Customer API Simulator</h1>
+                <p>SPRING BOOT 3.3.5 RESTful API & DTO PATTERN DEMO</p>
+            </div>
+        </div>
+        <div class="badge-container">
+            <span class="badge badge-primary"><i class="fa-solid fa-laptop-code"></i> Frontend Demo Mode</span>
+            <span class="badge badge-success"><i class="fa-solid fa-shield-halved"></i> Rate Limiter Active</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Sidebar: Simulation Controls -->
+        <aside class="sidebar">
+            
+            <!-- System Controls -->
+            <div>
+                <h3 class="section-title"><i class="fa-solid fa-sliders"></i> Cấu hình mô phỏng</h3>
+                <div class="control-group">
+                    <div class="control-group-title">API Versioning</div>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary);">Chọn phiên bản API để kiểm tra DTO Pattern khác biệt.</p>
+                    <div class="version-switcher">
+                        <button class="version-btn active" id="btn-v1" onclick="switchVersion('v1')">
+                            <span class="method-indicator method-GET">V1</span> Basic DTO
+                        </button>
+                        <button class="version-btn" id="btn-v2" onclick="switchVersion('v2')">
+                            <span class="method-indicator method-GET">V2</span> Expanded DTO
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rate Limiter Simulator -->
+            <div>
+                <h3 class="section-title"><i class="fa-solid fa-gauge-high"></i> Rate Limiting (Bucket4j)</h3>
+                <div class="control-group rate-limit-card">
+                    <div class="rate-limit-header">
+                        <span>IP: 192.168.1.55</span>
+                        <span id="rate-limit-counter" style="font-family: var(--font-code);">100 / 100 Req</span>
+                    </div>
+                    <div class="rate-limit-progress-bg">
+                        <div class="rate-limit-progress" id="rate-limit-bar"></div>
+                    </div>
+                    <p style="font-size: 0.7rem; color: var(--text-secondary); line-height: 1.4;">
+                        Mô phỏng giới hạn tần suất truy cập: tối đa 100 requests/phút mỗi IP.
+                    </p>
+                    <button class="rate-limit-action-btn" onclick="spamRequests()">
+                        <i class="fa-solid fa-bolt-lightning"></i> SPAM REQUESTS (Test 429)
+                    </button>
+                </div>
+            </div>
+
+            <!-- In-Memory H2 DB status -->
+            <div>
+                <h3 class="section-title"><i class="fa-solid fa-database"></i> Trạng thái H2 Database</h3>
+                <div class="control-group">
+                    <div class="db-stat">
+                        <span>Database Driver:</span>
+                        <span>org.h2.Driver</span>
+                    </div>
+                    <div class="db-stat">
+                        <span>Dialect:</span>
+                        <span>H2Dialect (MySQL Mode)</span>
+                    </div>
+                    <div class="db-stat">
+                        <span>Tổng số bản ghi:</span>
+                        <span id="db-total-records">5</span>
+                    </div>
+                    <button class="btn-reset-db" onclick="resetDatabase()">
+                        <i class="fa-solid fa-arrows-rotate"></i> Reset CSDL gốc
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info card -->
+            <div style="margin-top: auto; padding: 0.75rem; border: 1px dashed var(--border-color); border-radius: 8px; font-size: 0.7rem; color: var(--text-muted); line-height: 1.4;">
+                <i class="fa-solid fa-circle-info" style="color: var(--accent-info); margin-right: 0.25rem;"></i>
+                Mọi hành động thêm, sửa, xóa bên giao diện sẽ gửi mock request và cập nhật CSDL ảo lưu tại `localStorage` để mô phỏng hoàn hảo hoạt động thực tế.
+            </div>
+
+        </aside>
+
+        <!-- Right Side: Table View and Console Log Output -->
+        <main class="workspace">
+            
+            <!-- Top Half: Dashboard View -->
+            <div class="dashboard-panel">
+                
+                <div class="dashboard-header">
+                    <div class="dashboard-title">
+                        <h2>Danh sách khách hàng</h2>
+                        <p>Quản lý khách hàng bằng REST CRUD với các điều kiện ràng buộc Validation chặt chẽ.</p>
+                    </div>
+                    <button class="btn-add" onclick="openAddModal()">
+                        <i class="fa-solid fa-plus"></i> Thêm khách hàng mới
+                    </button>
+                </div>
+
+                <!-- Search & Filters -->
+                <div class="filter-bar">
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="search-input" class="search-input" placeholder="Tìm kiếm theo mã, họ tên, email..." oninput="handleSearch()">
+                    </div>
+                    
+                    <select id="filter-status" class="select-filter" onchange="handleFilter()">
+                        <option value="">-- Trạng thái --</option>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                    </select>
+
+                    <select id="sort-select" class="select-filter" onchange="handleSort()">
+                        <option value="customerCode-asc">Mã KH (A-Z)</option>
+                        <option value="customerCode-desc">Mã KH (Z-A)</option>
+                        <option value="name-asc">Họ tên (A-Z)</option>
+                        <option value="name-desc">Họ tên (Z-A)</option>
+                    </select>
+                </div>
+
+                <!-- Table Container -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onclick="triggerTableHeaderSort('customerCode')">Mã KH <i class="fa-solid fa-sort"></i></th>
+                                <th onclick="triggerTableHeaderSort('name')">Họ Tên <i class="fa-solid fa-sort"></i></th>
+                                <th>Địa chỉ</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
+                                <th>Trạng thái</th>
+                                <th style="width: 130px; text-align: center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customer-table-body">
+                            <!-- JS loaded records -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Empty State -->
+                    <div class="empty-state" id="empty-state">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p>Không tìm thấy khách hàng nào khớp với điều kiện tìm kiếm.</p>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-bar">
+                        <div class="pagination-info" id="pagination-info">
+                            Đang hiển thị 1-5 trên tổng số 5 khách hàng
+                        </div>
+                        <div class="pagination-controls" id="pagination-controls">
+                            <!-- Pagination buttons -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Half: Console API Explorer -->
+            <div class="live-api-logger">
+                
+                <!-- HTTP Request Panel -->
+                <div class="logger-panel">
+                    <div class="logger-panel-header">
+                        <div class="logger-panel-title">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> HTTP Request
+                        </div>
+                        <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-code);">CLIENT REQUEST SENDER</span>
+                    </div>
+                    <div class="logger-panel-body" style="background-color: #060911;">
+                        <div style="margin-bottom: 0.5rem;" id="request-line-container">
+                            <span class="http-method method-GET" id="req-method">GET</span>
+                            <span class="http-url" id="req-url">/api/v1/customers?page=0&size=5</span>
+                        </div>
+                        <pre class="json-viewer" id="req-headers" style="color: #6366F1; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 0.5rem; margin-bottom: 0.5rem;"></pre>
+                        <pre class="json-viewer" id="req-body" style="color: #E2E8F0;"></pre>
+                    </div>
+                </div>
+
+                <!-- HTTP Response Panel -->
+                <div class="logger-panel">
+                    <div class="logger-panel-header">
+                        <div class="logger-panel-title">
+                            <i class="fa-solid fa-cloud-arrow-down"></i> HTTP Response (JSON DTO + HATEOAS Links)
+                        </div>
+                        <span class="status-code status-2xx" id="res-status">200 OK</span>
+                    </div>
+                    <div class="logger-panel-body" style="background-color: #060911;">
+                        <pre class="json-viewer" id="res-body"></pre>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Modal Form (Create / Update / Patch) -->
+    <div class="modal-overlay" id="customer-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title"><i class="fa-solid fa-circle-plus"></i> Thêm khách hàng mới</h3>
+                <button class="btn-modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                
+                <input type="hidden" id="form-id">
+                <input type="hidden" id="form-action-mode" value="CREATE"> <!-- CREATE, PUT, PATCH -->
+
+                <div class="form-row" id="form-row-code">
+                    <label class="form-label" for="c-code">Mã khách hàng (Bắt buộc dạng Cxxx)</label>
+                    <input type="text" id="c-code" class="form-input" placeholder="Ví dụ: C006, C1234">
+                    <div class="error-message" id="err-code">Mã khách hàng phải bắt đầu bằng chữ C và theo sau là ít nhất 3 chữ số! (Regex: ^C\d{3,}$)</div>
+                </div>
+
+                <div class="form-row" id="form-row-name">
+                    <label class="form-label" for="c-name">Họ và tên</label>
+                    <input type="text" id="c-name" class="form-input" placeholder="Ví dụ: Nguyễn Văn A">
+                    <div class="error-message" id="err-name">Tên khách hàng không được để trống và từ 2-50 ký tự!</div>
+                </div>
+
+                <div class="form-row" id="form-row-address">
+                    <label class="form-label" for="c-address">Địa chỉ</label>
+                    <input type="text" id="c-address" class="form-input" placeholder="Ví dụ: 123 Nguyễn Trãi, Quận 5, TP.HCM">
+                    <div class="error-message" id="err-address">Địa chỉ không được để trống!</div>
+                </div>
+
+                <div class="form-row" id="form-row-email">
+                    <label class="form-label" for="c-email">Email</label>
+                    <input type="email" id="c-email" class="form-input" placeholder="Ví dụ: nva@gmail.com">
+                    <div class="error-message" id="err-email">Email không hợp lệ!</div>
+                </div>
+
+                <div class="form-row" id="form-row-phone">
+                    <label class="form-label" for="c-phone">Số điện thoại</label>
+                    <input type="text" id="c-phone" class="form-input" placeholder="Ví dụ: 0901234567">
+                    <div class="error-message" id="err-phone">Số điện thoại phải từ 10-11 số!</div>
+                </div>
+
+                <div class="form-row" id="form-row-status">
+                    <label class="form-label" for="c-status">Trạng thái</label>
+                    <select id="c-status" class="form-input">
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Đóng</button>
+                <button class="btn-primary" onclick="submitForm()" id="btn-submit-modal">Lưu thông tin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rate Limit Error Modal Overlay -->
+    <div class="rate-limit-overlay" id="rate-limit-modal">
+        <div class="rate-limit-card-error">
+            <div class="rate-limit-error-icon">
+                <i class="fa-solid fa-hand"></i>
+            </div>
+            <h2>HTTP 429 Too Many Requests</h2>
+            <p>
+                Hệ thống bảo mật **Bucket4j API Protection** phát hiện IP của bạn (`192.168.1.55`) đã gửi vượt quá giới hạn **100 requests / 1 phút**.
+            </p>
+            <p>Vui lòng đợi cho đến khi Token Bucket được phục hồi.</p>
+            <div class="rate-limit-countdown" id="rate-limit-countdown">
+                Khôi phục sau: 15s
+            </div>
+            <button onclick="dismissRateLimitError()">Đóng và thử lại</button>
+        </div>
+    </div>
+
+    <!-- Toast Notifications container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Simulation Script Logic -->
+    <script>
+        // Init Mock Database in LocalStorage
+        const INITIAL_CUSTOMERS = [
+            { id: 1, customerCode: "C001", name: "Nguyễn Văn Anh", address: "123 Nguyễn Huệ, Quận 1, TP.HCM", email: "vananh.nguyen@gmail.com", phone: "0901234567", status: "ACTIVE" },
+            { id: 2, customerCode: "C002", name: "Trần Thị Bình", address: "456 Lê Lợi, Hải Châu, Đà Nẵng", email: "thibinh.tran@yahoo.com", phone: "0912345678", status: "ACTIVE" },
+            { id: 3, customerCode: "C003", name: "Lê Hoàng Châu", address: "789 Nguyễn Chí Thanh, Đống Đa, Hà Nội", email: "hoangchau.le@outlook.com", phone: "0987654321", status: "INACTIVE" },
+            { id: 4, customerCode: "C004", name: "Phạm Minh Đức", address: "101 Trần Hưng Đạo, Cần Thơ", email: "minhduc.pham@gmail.com", phone: "0933445566", status: "ACTIVE" },
+            { id: 5, customerCode: "C005", name: "Vũ Hoàng Yến", address: "202 Lê Hồng Phong, Vũng Tàu", email: "hoangyen.vu@gmail.com", phone: "0944556677", status: "ACTIVE" }
+        ];
+
+        let customers = [];
+        let apiVersion = 'v1'; // v1 or v2
+        let rateLimitTokens = 100;
+        let isRateLimited = false;
+        let rateLimitTimer = null;
+        let rateLimitCountdownValue = 0;
+
+        // Sorting, filtering, paging parameters
+        let page = 0;
+        let size = 5;
+        let sortBy = 'customerCode';
+        let sortDir = 'asc';
+        let keyword = '';
+        let statusFilter = '';
+
+        // Load data from LocalStorage or initialize
+        function initData() {
+            const stored = localStorage.getItem('mock_customers');
+            if (stored) {
+                customers = JSON.parse(stored);
+            } else {
+                customers = [...INITIAL_CUSTOMERS];
+                localStorage.setItem('mock_customers', JSON.stringify(customers));
+            }
+            updateDbStats();
+        }
+
+        function updateDbStats() {
+            document.getElementById('db-total-records').innerText = customers.length;
+        }
+
+        function resetDatabase() {
+            customers = [...INITIAL_CUSTOMERS];
+            localStorage.setItem('mock_customers', JSON.stringify(customers));
+            showToast("Database has been reset to original mock data!", "success");
+            updateDbStats();
+            executeRequest('GET', `/api/${apiVersion}/customers?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`, null);
+            renderTable();
+        }
+
+        // Rate Limiter logic
+        setInterval(() => {
+            if (rateLimitTokens < 100 && !isRateLimited) {
+                rateLimitTokens = Math.min(100, rateLimitTokens + 2); // recover 2 tokens every second
+                updateRateLimitUI();
+            }
+        }, 1000);
+
+        function consumeToken() {
+            if (isRateLimited) return false;
+            
+            rateLimitTokens--;
+            updateRateLimitUI();
+            
+            if (rateLimitTokens <= 0) {
+                triggerRateLimiterBlock();
+                return false;
+            }
+            return true;
+        }
+
+        function updateRateLimitUI() {
+            const counter = document.getElementById('rate-limit-counter');
+            const bar = document.getElementById('rate-limit-bar');
+            
+            counter.innerText = `${rateLimitTokens} / 100 Req`;
+            bar.style.width = `${rateLimitTokens}%`;
+            
+            if (rateLimitTokens > 50) {
+                bar.className = 'rate-limit-progress';
+            } else if (rateLimitTokens > 20) {
+                bar.className = 'rate-limit-progress warning';
+            } else {
+                bar.className = 'rate-limit-progress danger';
+            }
+        }
+
+        function triggerRateLimiterBlock() {
+            isRateLimited = true;
+            rateLimitCountdownValue = 15;
+            document.getElementById('rate-limit-modal').classList.add('active');
+            document.getElementById('rate-limit-countdown').innerText = `Khôi phục sau: ${rateLimitCountdownValue}s`;
+            
+            // Log block HTTP 429
+            logResponse(429, "Too Many Requests", {
+                timestamp: new Date().toISOString(),
+                status: 429,
+                error: "Too Many Requests",
+                message: "API rate limit exceeded. You are allowed 100 requests per minute.",
+                path: `/api/${apiVersion}/customers`
+            });
+
+            rateLimitTimer = setInterval(() => {
+                rateLimitCountdownValue--;
+                if (rateLimitCountdownValue <= 0) {
+                    dismissRateLimitError();
+                } else {
+                    document.getElementById('rate-limit-countdown').innerText = `Khôi phục sau: ${rateLimitCountdownValue}s`;
+                }
+            }, 1000);
+        }
+
+        function dismissRateLimitError() {
+            clearInterval(rateLimitTimer);
+            isRateLimited = false;
+            rateLimitTokens = 30; // reset with some initial tokens
+            updateRateLimitUI();
+            document.getElementById('rate-limit-modal').classList.remove('active');
+            showToast("Rate limit has reset. You can now make requests again.", "info");
+        }
+
+        function spamRequests() {
+            if (isRateLimited) return;
+            showToast("Simulating heavy traffic spamming...", "warning");
+            
+            let interval = setInterval(() => {
+                if (rateLimitTokens > 1) {
+                    consumeToken();
+                } else {
+                    clearInterval(interval);
+                    consumeToken(); // triggers block
+                }
+            }, 50);
+        }
+
+        // Versioning Logic
+        function switchVersion(version) {
+            if (!consumeToken()) return;
+            apiVersion = version;
+            document.getElementById('btn-v1').classList.toggle('active', version === 'v1');
+            document.getElementById('btn-v2').classList.toggle('active', version === 'v2');
+            
+            showToast(`Switched API View to version ${version.toUpperCase()}`, "info");
+            
+            // Re-fetch current listing to show different DTO formats
+            executeRequest('GET', `/api/${version}/customers?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`, null);
+            renderTable();
+        }
+
+        // Logger View Controller
+        function executeRequest(method, url, body) {
+            document.getElementById('req-method').innerText = method;
+            document.getElementById('req-method').className = `http-method method-${method}`;
+            document.getElementById('req-url').innerText = url;
+
+            const headers = {
+                "Accept": "application/hal+json",
+                "X-Forwarded-For": "192.168.1.55",
+                "X-API-VERSION": apiVersion === 'v1' ? "1.0" : "2.0"
+            };
+            if (body) {
+                headers["Content-Type"] = "application/json";
+                document.getElementById('req-body').innerText = JSON.stringify(body, null, 2);
+            } else {
+                document.getElementById('req-body').innerText = "// No Request Body";
+            }
+            document.getElementById('req-headers').innerText = JSON.stringify(headers, null, 2);
+        }
+
+        function logResponse(status, statusText, data) {
+            const resStatus = document.getElementById('res-status');
+            resStatus.innerText = `${status} ${statusText}`;
+            resStatus.className = `status-code status-${status >= 200 && status < 300 ? '2xx' : '4xx'}`;
+            document.getElementById('res-body').innerText = JSON.stringify(data, null, 2);
+        }
+
+        // Data Query Engine simulating spring JPA filtering, searching and paging
+        function getFilteredData() {
+            let result = [...customers];
+
+            // 1. Keyword search (Code, Name, Email)
+            if (keyword) {
+                const kw = keyword.toLowerCase();
+                result = result.filter(c => 
+                    c.customerCode.toLowerCase().includes(kw) || 
+                    c.name.toLowerCase().includes(kw) || 
+                    c.email.toLowerCase().includes(kw)
+                );
+            }
+
+            // 2. Status Filter
+            if (statusFilter) {
+                result = result.filter(c => c.status === statusFilter);
+            }
+
+            // 3. Sorting
+            result.sort((a, b) => {
+                let valA = a[sortBy];
+                let valB = b[sortBy];
+                
+                if (typeof valA === 'string') {
+                    return sortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else {
+                    return sortDir === 'asc' ? valA - valB : valB - valA;
+                }
+            });
+
+            // 4. Pagination
+            const totalElements = result.length;
+            const totalPages = Math.ceil(totalElements / size) || 1;
+            
+            // Adjust current page if it is out of range
+            if (page >= totalPages) page = totalPages - 1;
+            if (page < 0) page = 0;
+
+            const startIndex = page * size;
+            const endIndex = Math.min(startIndex + size, totalElements);
+            const content = result.slice(startIndex, endIndex);
+
+            // Mapping entities to DTO formats
+            const dtoContent = content.map(c => toDTO(c));
+
+            return {
+                content: dtoContent,
+                totalElements,
+                totalPages,
+                pageNumber: page,
+                pageSize: size
+            };
+        }
+
+        // DTO Pattern mapping
+        function toDTO(customer) {
+            if (apiVersion === 'v1') {
+                // V1 DTO: Basic Customer DTO
+                return {
+                    id: customer.id,
+                    customerCode: customer.customerCode,
+                    name: customer.name,
+                    address: customer.address,
+                    email: customer.email,
+                    phone: customer.phone,
+                    status: customer.status,
+                    _links: {
+                        self: { href: `http://localhost:8080/api/v1/customers/${customer.id}` },
+                        update: { href: `http://localhost:8080/api/v1/customers/${customer.id}` },
+                        delete: { href: `http://localhost:8080/api/v1/customers/${customer.id}` }
+                    }
+                };
+            } else {
+                // V2 DTO: Expanded DTO simulating schema evolution (e.g. splitting address and capitalizing names)
+                const addrParts = customer.address.split(',');
+                const city = addrParts[addrParts.length - 1]?.trim() || "";
+                const street = addrParts.slice(0, addrParts.length - 1).join(',').trim() || customer.address;
+
+                return {
+                    id: customer.id,
+                    customerCode: customer.customerCode,
+                    fullName: customer.name.toUpperCase(), // Modified key
+                    streetAddress: street,                 // Split address
+                    city: city,
+                    contactEmail: customer.email,          // Modified key
+                    phone: customer.phone,
+                    status: customer.status,
+                    version: "V2.0-HATEOAS",
+                    _links: {
+                        self: { href: `http://localhost:8080/api/v2/customers/${customer.id}` },
+                        parentList: { href: `http://localhost:8080/api/v2/customers` }
+                    }
+                };
+            }
+        }
+
+        // Table and Pagination rendering
+        function renderTable() {
+            const dataResult = getFilteredData();
+            const tbody = document.getElementById('customer-table-body');
+            const emptyState = document.getElementById('empty-state');
+            
+            tbody.innerHTML = '';
+            
+            if (dataResult.content.length === 0) {
+                emptyState.style.display = 'block';
+                document.getElementById('pagination-info').innerText = 'Không hiển thị kết quả nào';
+                document.getElementById('pagination-controls').innerHTML = '';
+                
+                // Log mock API Response
+                logResponse(200, "OK", {
+                    _embedded: { customers: [] },
+                    _links: {
+                        self: { href: `http://localhost:8080/api/${apiVersion}/customers?page=${page}&size=${size}` }
+                    },
+                    page: {
+                        size: size,
+                        totalElements: 0,
+                        totalPages: 0,
+                        number: page
+                    }
+                });
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            dataResult.content.forEach(c => {
+                const tr = document.createElement('tr');
+                
+                // Extract values based on API Version
+                const id = c.id;
+                const code = c.customerCode;
+                const name = apiVersion === 'v1' ? c.name : c.fullName;
+                const address = apiVersion === 'v1' ? c.address : `${c.streetAddress}, ${c.city}`;
+                const email = apiVersion === 'v1' ? c.email : c.contactEmail;
+                const phone = c.phone;
+                const status = c.status;
+
+                tr.innerHTML = `
+                    <td class="td-code">${code}</td>
+                    <td class="td-name">${name}</td>
+                    <td>${address}</td>
+                    <td>${email}</td>
+                    <td>${phone}</td>
+                    <td>
+                        <span class="status-badge ${status === 'ACTIVE' ? 'status-active' : 'status-inactive'}">
+                            <i class="fa-solid ${status === 'ACTIVE' ? 'fa-check' : 'fa-ban'}"></i> ${status}
+                        </span>
+                    </td>
+                    <td class="action-cell">
+                        <button class="btn-action edit" onclick="openEditModal(${id}, 'PUT')" title="HTTP PUT (Full Update)">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="btn-action patch" onclick="openEditModal(${id}, 'PATCH')" title="HTTP PATCH (Partial Update)">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                        <button class="btn-action delete" onclick="deleteCustomer(${id})" title="HTTP DELETE">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update Pagination Info
+            const startNum = dataResult.pageNumber * dataResult.pageSize + 1;
+            const endNum = Math.min(startNum + dataResult.content.length - 1, dataResult.totalElements);
+            document.getElementById('pagination-info').innerText = `Đang hiển thị ${startNum}-${endNum} trên tổng số ${dataResult.totalElements} khách hàng`;
+
+            // Render Pagination Buttons
+            const pagControls = document.getElementById('pagination-controls');
+            pagControls.innerHTML = '';
+
+            // Previous button
+            const btnPrev = document.createElement('button');
+            btnPrev.className = 'btn-page';
+            btnPrev.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+            btnPrev.disabled = page === 0;
+            btnPrev.onclick = () => {
+                if (consumeToken()) {
+                    page--;
+                    executeRequest('GET', `/api/${apiVersion}/customers?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`, null);
+                    renderTable();
+                }
+            };
+            pagControls.appendChild(btnPrev);
+
+            // Numbered buttons
+            for (let i = 0; i < dataResult.totalPages; i++) {
+                const btnNum = document.createElement('button');
+                btnNum.className = `btn-page ${i === page ? 'active' : ''}`;
+                btnNum.innerText = i + 1;
+                btnNum.onclick = () => {
+                    if (consumeToken()) {
+                        page = i;
+                        executeRequest('GET', `/api/${apiVersion}/customers?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`, null);
+                        renderTable();
+                    }
+                };
+                pagControls.appendChild(btnNum);
+            }
+
+            // Next button
+            const btnNext = document.createElement('button');
+            btnNext.className = 'btn-page';
+            btnNext.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+            btnNext.disabled = page === dataResult.totalPages - 1;
+            btnNext.onclick = () => {
+                if (consumeToken()) {
+                    page++;
+                    executeRequest('GET', `/api/${apiVersion}/customers?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`, null);
+                    renderTable();
+                }
+            };
+            pagControls.appendChild(btnNext);
+
+            // Log mock HTTP Response representing complete Spring HATEOAS Response
+            logResponse(200, "OK", {
+                _embedded: {
+                    customers: dataResult.content
+                },
+                _links: {
+                    self: { href: `http://localhost:8080/api/${apiVersion}/customers?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}` },
+                    first: { href: `http://localhost:8080/api/${apiVersion}/customers?page=0&size=${size}` },
+                    last: { href: `http://localhost:8080/api/${apiVersion}/customers?page=${dataResult.totalPages - 1}&size=${size}` }
+                },
+                page: {
+                    size: dataResult.pageSize,
+                    totalElements: dataResult.totalElements,
+                    totalPages: dataResult.totalPages,
+                    number: dataResult.pageNumber
+                }
+            });
+        }
+
+        // Search & Filter handlers
+        function handleSearch() {
+            keyword = document.getElementById('search-input').value;
+            page = 0; // reset page
+            renderTable();
+        }
+
+        function handleFilter() {
+            statusFilter = document.getElementById('filter-status').value;
+            page = 0;
+            renderTable();
+        }
+
+        function handleSort() {
+            const val = document.getElementById('sort-select').value;
+            const parts = val.split('-');
+            sortBy = parts[0];
+            sortDir = parts[1];
+            renderTable();
+        }
+
+        function triggerTableHeaderSort(field) {
+            if (sortBy === field) {
+                sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortBy = field;
+                sortDir = 'asc';
+            }
+            // Sync selection dropdown
+            document.getElementById('sort-select').value = `${sortBy}-${sortDir}`;
+            renderTable();
+        }
+
+        // Delete Handler (DELETE)
+        function deleteCustomer(id) {
+            if (!consumeToken()) return;
+            
+            const customerIndex = customers.findIndex(c => c.id === id);
+            if (customerIndex === -1) {
+                showToast("Khách hàng không tồn tại!", "danger");
+                return;
+            }
+
+            const code = customers[customerIndex].customerCode;
+
+            if (confirm(`Bạn có chắc chắn muốn xóa khách hàng ${code}? (HTTP DELETE)`)) {
+                // Remove
+                customers.splice(customerIndex, 1);
+                localStorage.setItem('mock_customers', JSON.stringify(customers));
+                updateDbStats();
+                
+                showToast(`Deleted customer ${code} successfully!`, "success");
+                
+                // Log HTTP request and response
+                executeRequest('DELETE', `/api/${apiVersion}/customers/${id}`, null);
+                logResponse(204, "No Content", null); // HTTP 204 No Content for successful DELETE in REST APIs
+                
+                renderTable();
+            }
+        }
+
+        // Modal triggers
+        function openAddModal() {
+            document.getElementById('form-id').value = '';
+            document.getElementById('form-action-mode').value = 'CREATE';
+            document.getElementById('modal-title').innerHTML = '<i class="fa-solid fa-circle-plus"></i> Thêm khách hàng mới (HTTP POST)';
+            
+            // Show all fields
+            document.getElementById('form-row-code').style.display = 'flex';
+            document.getElementById('form-row-name').style.display = 'flex';
+            document.getElementById('form-row-address').style.display = 'flex';
+            document.getElementById('form-row-email').style.display = 'flex';
+            document.getElementById('form-row-phone').style.display = 'flex';
+            document.getElementById('form-row-status').style.display = 'flex';
+
+            // Clear inputs
+            document.getElementById('c-code').value = '';
+            document.getElementById('c-name').value = '';
+            document.getElementById('c-address').value = '';
+            document.getElementById('c-email').value = '';
+            document.getElementById('c-phone').value = '';
+            document.getElementById('c-status').value = 'ACTIVE';
+
+            clearErrors();
+            document.getElementById('customer-modal').classList.add('active');
+        }
+
+        function openEditModal(id, mode) {
+            const customer = customers.find(c => c.id === id);
+            if (!customer) return;
+
+            document.getElementById('form-id').value = id;
+            document.getElementById('form-action-mode').value = mode;
+
+            if (mode === 'PUT') {
+                document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen"></i> Cập nhật toàn bộ (HTTP PUT) - ID: ${id}`;
+                // PUT requires showing all fields
+                document.getElementById('form-row-code').style.display = 'flex';
+                document.getElementById('form-row-name').style.display = 'flex';
+                document.getElementById('form-row-address').style.display = 'flex';
+                document.getElementById('form-row-email').style.display = 'flex';
+                document.getElementById('form-row-phone').style.display = 'flex';
+                document.getElementById('form-row-status').style.display = 'flex';
+            } else {
+                document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Sửa một phần (HTTP PATCH) - ID: ${id}`;
+                // PATCH: Simulate modifying fields selectively. Let's show only Name, Address & Email
+                document.getElementById('form-row-code').style.display = 'none';
+                document.getElementById('form-row-name').style.display = 'flex';
+                document.getElementById('form-row-address').style.display = 'flex';
+                document.getElementById('form-row-email').style.display = 'flex';
+                document.getElementById('form-row-phone').style.display = 'none';
+                document.getElementById('form-row-status').style.display = 'none';
+            }
+
+            // Fill inputs with current values
+            document.getElementById('c-code').value = customer.customerCode;
+            document.getElementById('c-name').value = customer.name;
+            document.getElementById('c-address').value = customer.address;
+            document.getElementById('c-email').value = customer.email;
+            document.getElementById('c-phone').value = customer.phone;
+            document.getElementById('c-status').value = customer.status;
+
+            clearErrors();
+            document.getElementById('customer-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('customer-modal').classList.remove('active');
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.form-input').forEach(el => el.classList.remove('invalid'));
+        }
+
+        // Form Submit handler
+        function submitForm() {
+            if (!consumeToken()) return;
+
+            const mode = document.getElementById('form-action-mode').value;
+            const id = document.getElementById('form-id').value;
+
+            // Read input values
+            const code = document.getElementById('c-code').value.trim();
+            const name = document.getElementById('c-name').value.trim();
+            const address = document.getElementById('c-address').value.trim();
+            const email = document.getElementById('c-email').value.trim();
+            const phone = document.getElementById('c-phone').value.trim();
+            const status = document.getElementById('c-status').value;
+
+            clearErrors();
+
+            // Validation (Simulating Spring `@Valid` Annotations)
+            let hasErrors = false;
+
+            if (mode === 'CREATE' || mode === 'PUT') {
+                // Customer Code Regex Validation (^C\d{3,}$)
+                const codeRegex = /^C\d{3,}$/;
+                if (!codeRegex.test(code)) {
+                    document.getElementById('err-code').style.display = 'block';
+                    document.getElementById('c-code').classList.add('invalid');
+                    hasErrors = true;
+                }
+
+                // Check duplicate customer code in DB
+                const isDuplicate = customers.some(c => c.customerCode === code && c.id != id);
+                if (isDuplicate) {
+                    showToast(`Mã khách hàng ${code} đã tồn tại trong CSDL!`, "danger");
+                    hasErrors = true;
+                }
+
+                // Name validation
+                if (!name || name.length < 2 || name.length > 50) {
+                    document.getElementById('err-name').style.display = 'block';
+                    document.getElementById('c-name').classList.add('invalid');
+                    hasErrors = true;
+                }
+
+                // Address validation
+                if (!address) {
+                    document.getElementById('err-address').style.display = 'block';
+                    document.getElementById('c-address').classList.add('invalid');
+                    hasErrors = true;
+                }
+
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    document.getElementById('err-email').style.display = 'block';
+                    document.getElementById('c-email').classList.add('invalid');
+                    hasErrors = true;
+                }
+
+                // Phone validation (10-11 digits)
+                const phoneRegex = /^\d{10,11}$/;
+                if (!phoneRegex.test(phone)) {
+                    document.getElementById('err-phone').style.display = 'block';
+                    document.getElementById('c-phone').classList.add('invalid');
+                    hasErrors = true;
+                }
+            } else if (mode === 'PATCH') {
+                // PATCH Validation (Simulate partial validate)
+                if (name && (name.length < 2 || name.length > 50)) {
+                    document.getElementById('err-name').style.display = 'block';
+                    document.getElementById('c-name').classList.add('invalid');
+                    hasErrors = true;
+                }
+
+                if (email) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        document.getElementById('err-email').style.display = 'block';
+                        document.getElementById('c-email').classList.add('invalid');
+                        hasErrors = true;
+                    }
+                }
+            }
+
+            if (hasErrors) {
+                showToast("Dữ liệu nhập không hợp lệ! Vui lòng kiểm tra các trường báo đỏ.", "danger");
+                
+                // Log HTTP Bad Request
+                logResponse(400, "Bad Request", {
+                    timestamp: new Date().toISOString(),
+                    status: 400,
+                    error: "Bad Request",
+                    message: "Validation failed for object='customerDTO'. Error count: 1",
+                    errors: [
+                        {
+                            field: "customerCode",
+                            defaultMessage: "Mã khách hàng phải đúng định dạng ^C\\d{3,}$"
+                        }
+                    ]
+                });
+                return;
+            }
+
+            // Processing DB operation
+            if (mode === 'CREATE') {
+                const newId = customers.length > 0 ? Math.max(...customers.map(c => c.id)) + 1 : 1;
+                const newCustomer = { id: newId, customerCode: code, name, address, email, phone, status };
+                
+                customers.push(newCustomer);
+                localStorage.setItem('mock_customers', JSON.stringify(customers));
+                updateDbStats();
+                
+                showToast(`Created customer ${code} successfully!`, "success");
+                
+                // Logger REST payload
+                executeRequest('POST', `/api/${apiVersion}/customers`, newCustomer);
+                logResponse(201, "Created", toDTO(newCustomer)); // 201 Created for REST POST
+                
+            } else if (mode === 'PUT') {
+                // Full Update
+                const cIdx = customers.findIndex(c => c.id == id);
+                customers[cIdx] = { id: Number(id), customerCode: code, name, address, email, phone, status };
+                localStorage.setItem('mock_customers', JSON.stringify(customers));
+                
+                showToast(`Updated customer ${code} successfully (PUT)!`, "success");
+                
+                executeRequest('PUT', `/api/${apiVersion}/customers/${id}`, customers[cIdx]);
+                logResponse(200, "OK", toDTO(customers[cIdx]));
+                
+            } else if (mode === 'PATCH') {
+                // Partial Update
+                const cIdx = customers.findIndex(c => c.id == id);
+                const original = customers[cIdx];
+                
+                // Apply changes only if provided
+                if (name) original.name = name;
+                if (address) original.address = address;
+                if (email) original.email = email;
+                
+                localStorage.setItem('mock_customers', JSON.stringify(customers));
+                
+                showToast(`Patched customer ${original.customerCode} successfully (PATCH)!`, "success");
+                
+                // Log payload sent in patch (only partial keys)
+                const patchedFields = {};
+                if (name) patchedFields.name = name;
+                if (address) patchedFields.address = address;
+                if (email) patchedFields.email = email;
+                
+                executeRequest('PATCH', `/api/${apiVersion}/customers/${id}`, patchedFields);
+                logResponse(200, "OK", toDTO(original));
+            }
+
+            closeModal();
+            renderTable();
+        }
+
+        // Toast Helper
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            
+            let icon = '<i class="fa-solid fa-circle-info toast-icon-info"></i>';
+            if (type === 'success') icon = '<i class="fa-solid fa-circle-check toast-icon-success"></i>';
+            if (type === 'danger') icon = '<i class="fa-solid fa-circle-exclamation toast-icon-danger"></i>';
+            if (type === 'warning') icon = '<i class="fa-solid fa-triangle-exclamation toast-icon-warning"></i>';
+
+            toast.innerHTML = `
+                ${icon}
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // animation delay
+            setTimeout(() => {
+                toast.classList.add('active');
+            }, 10);
+
+            // remove after 3s
+            setTimeout(() => {
+                toast.classList.remove('active');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Startup Bootstrapping
+        window.onload = () => {
+            initData();
+            // Perform default page fetch log
+            executeRequest('GET', `/api/v1/customers?page=0&size=5&sortBy=customerCode&sortDir=asc`, null);
+            renderTable();
+        };
+
+    </script>
+</body>
+</html>

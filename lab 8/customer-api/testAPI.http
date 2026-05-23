@@ -1,0 +1,155 @@
+### =========================================================================
+### CUSTOMER REST API - TESTING COLLECTION (Spring Boot + JPA + DTO + HATEOAS)
+### =========================================================================
+# Requires VS Code "REST Client" extension to run directly.
+# Base URL matches spring.port=8080 configuration
+
+@baseUrl = http://localhost:8080/api
+@contentType = application/json
+
+### -------------------------------------------------------------------------
+### 1. VERSION 1 & BACKWARD-COMPATIBILITY ENDPOINTS (/api/customers or /api/v1/customers)
+### -------------------------------------------------------------------------
+
+### 1.1 GET All Customers (Unfiltered)
+GET {{baseUrl}}/customers
+Accept: {{contentType}}
+
+###
+
+### 1.2 GET All Customers (Unfiltered via V1 versioned path)
+GET {{baseUrl}}/v1/customers
+Accept: {{contentType}}
+
+###
+
+### 1.3 GET Customer by ID (Valid id: 1)
+GET {{baseUrl}}/v1/customers/1
+Accept: {{contentType}}
+
+###
+
+### 1.4 GET Customer by ID (Invalid id: 999 - Expected: 404 Not Found)
+GET {{baseUrl}}/v1/customers/999
+Accept: {{contentType}}
+
+###
+
+### 1.5 POST Create New Customer (Expected: 201 Created)
+POST {{baseUrl}}/v1/customers
+Content-Type: {{contentType}}
+
+{
+  "customerCode": "C006",
+  "fullName": "David Miller",
+  "email": "david.miller@example.com",
+  "phone": "+15550106",
+  "address": "999 Broadway, Seattle, WA 98101"
+}
+
+###
+
+### 1.6 POST Create Customer with Validation Errors (Expected: 400 Bad Request)
+POST {{baseUrl}}/v1/customers
+Content-Type: {{contentType}}
+
+{
+  "customerCode": "C",
+  "fullName": "D",
+  "email": "invalid-email-format",
+  "phone": "invalid-phone"
+}
+
+###
+
+### 1.7 POST Create Customer with Duplicate Email (Expected: 409 Conflict)
+POST {{baseUrl}}/v1/customers
+Content-Type: {{contentType}}
+
+{
+  "customerCode": "C007",
+  "fullName": "Test Duplicate",
+  "email": "john.doe@example.com",
+  "phone": "+15559999"
+}
+
+###
+
+### 1.8 PUT Update Existing Customer Fully (Expected: 200 OK)
+PUT {{baseUrl}}/v1/customers/1
+Content-Type: {{contentType}}
+
+{
+  "customerCode": "C001",
+  "fullName": "John Doe Updated",
+  "email": "john.doe.updated@example.com",
+  "phone": "+1-555-0101",
+  "address": "123 Main St, New York, NY 10001",
+  "status": "ACTIVE"
+}
+
+###
+
+### 1.9 PATCH Update Customer Partially (Expected: 200 OK)
+PATCH {{baseUrl}}/v1/customers/1
+Content-Type: {{contentType}}
+
+{
+  "fullName": "John Doe Partially Updated"
+}
+
+###
+
+### 1.10 DELETE Customer (Expected: 200 OK with confirmation message)
+DELETE {{baseUrl}}/v1/customers/6
+
+###
+
+### 1.11 GET Search Customers by Keyword (fullName, email, or customerCode)
+GET {{baseUrl}}/v1/customers/search?keyword=john
+Accept: {{contentType}}
+
+###
+
+### 1.12 GET Filter Customers by Status (ACTIVE or INACTIVE)
+GET {{baseUrl}}/v1/customers/status/ACTIVE
+Accept: {{contentType}}
+
+###
+
+### 1.13 GET Advanced Search with Multiple Parameters (Name, Email, and Status)
+GET {{baseUrl}}/v1/customers/advanced-search?name=John&email=example&status=ACTIVE
+Accept: {{contentType}}
+
+###
+
+### 1.14 GET Customers with Pagination (Page 0, Size 2)
+GET {{baseUrl}}/v1/customers?page=0&size=2
+Accept: {{contentType}}
+
+###
+
+### 1.15 GET Customers with Sorting (Sorted by fullName descending)
+GET {{baseUrl}}/v1/customers?sortBy=fullName&sortDir=desc
+Accept: {{contentType}}
+
+###
+
+### 1.16 GET Customers with Pagination and Sorting Combined
+GET {{baseUrl}}/v1/customers?page=0&size=2&sortBy=fullName&sortDir=asc
+Accept: {{contentType}}
+
+
+### -------------------------------------------------------------------------
+### 2. VERSION 2 ENDPOINTS - INTEGRATING HATEOAS LINKS (/api/v2/customers)
+### -------------------------------------------------------------------------
+
+### 2.1 GET All Customers (v2 - Notice the hypermedia _links in the output)
+GET {{baseUrl}}/v2/customers
+Accept: {{contentType}}
+
+###
+
+### 2.2 GET Customer by ID (v2 - Notice the self and list links)
+GET {{baseUrl}}/v2/customers/1
+Accept: {{contentType}}
